@@ -66,7 +66,9 @@ function postArticle(req, res) {
                     console.error(error);
                     res.status(500).send('Error saving article history');
                   } else {
-                    res.send('Article updated successfully');
+                    const status = "Article saved successfully";
+                    const id = req.query.id;
+                    res.send({ id, status });
                   }
                 }
               );
@@ -91,7 +93,9 @@ function postArticle(req, res) {
                     console.error(error);
                     res.status(500).send('Error saving article history');
                   } else {
-                    res.send('Article saved successfully');
+                    const status = "Article saved successfully";
+                    const id = req.query.id;
+                    res.send({ id, status });
                   }
                 }
               );
