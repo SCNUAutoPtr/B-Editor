@@ -15,6 +15,20 @@ app.get('/articlelist', (req, res) => {
   });
 });
 
+// 处理 GET /article?id= 请求
+app.get('/article', (req, res) => {
+  const articleId = req.query.id;
+
+  text.getArticle(articleId, (data) => {
+    if (data === null) {
+      res.status(404).send('Article not found');
+    } else {
+      res.send(data);
+    }
+  });
+});
+
+
 // 启动服务器
 app.listen(3000, () => {
   console.log('Server started on port 3000');

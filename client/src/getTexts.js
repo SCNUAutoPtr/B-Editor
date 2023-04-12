@@ -16,6 +16,22 @@ function getTexts(callback) {
   });
 }
 
+function getArticle(id, callback) {
+  const query = `SELECT title, content FROM text WHERE id = ${id}`;
+  connection.query(query, (error, results) => {
+    if (error) throw error;
+
+    // 如果找不到该文章，则返回 null
+    if (results.length === 0) {
+      callback(null);
+    } else {
+      const article = results[0];
+      const { title, content } = article;
+      callback({ title, content });
+    }
+  });
+}
+
 module.exports = {
-    getTexts
+    getTexts,getArticle
 };
