@@ -4,7 +4,7 @@ import App from './App.vue'
 createApp(App).mount('#app')
 
 const express = require('express');
-const text = require('getTexts.js');
+const text = require('Texts.js');
 
 const app = express();
 
@@ -27,6 +27,11 @@ app.get('/article', (req, res) => {
     }
   });
 });
+// 使用 bodyParser 解析请求体数据
+app.use(bodyParser.json());
+
+// 处理 POST /article?id= 请求
+app.post('/article', text.postArticle);
 
 
 // 启动服务器
