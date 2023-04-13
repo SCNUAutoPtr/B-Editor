@@ -3,9 +3,24 @@ const mysql = require('mysql');
 // 连接数据库
 const connection = mysql.createConnection({
   host: 'localhost',
-  user: 'your_username',
-  password: 'your_password',
+  user: 'test',
+  password: '@Testing01',
   database: 'rich_text_editor'
+});
+
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'test',
+  password: '@Testing01',
+  database: 'rich_text_editor'
+});
+
+connection.connect((error) => {
+  if (error) {
+    console.error('Error connecting to database: ' + error.stack);
+    return;
+  }
+  console.log('Connected to database as id ' + connection.threadId);
 });
 
 // 获取文章列表
@@ -107,6 +122,32 @@ function postArticle(req, res) {
   );
 }
 
+function getCommentsByArticleId(articleId, callback) {
+  //获取文章id的评论列表
+  const sql = 'SELECT username,comments,createdAt FROM comments WHERE article_id = ?';
+  connection.query(sql, [articleId], (error, results, fields) => {
+    if (error) {
+      console.error('Error selecting comments from database: ' + error.stack);
+      callback(error, null);
+      return;
+    }
+    callback(null, results);
+  });
+}
+
+function addComment(articleId, username, comment, callback) {
+  const sql = 'INSERT INTO comments (article_id, username, comment) VALUES (?, ?, ?)';
+  connection.query(sql, [articleId, username, comment], (error, results, fields) => {
+    if (error) {
+      console.error('Error inserting comment into database: ' + error.stack);
+      callback(error, null);
+      return;
+    }
+    const status = 'Comment added successfully'
+    callback({ articleId, username, status });
+  });
+}
+
 module.exports = {
-  getTexts, getArticle, postArticle
+  getTexts, getArticle, postArticle, getCommentsByArticleId, addComment
 };

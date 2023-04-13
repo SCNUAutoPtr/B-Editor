@@ -22,11 +22,39 @@ app.get('/article', (req, res) => {
     }
   });
 });
+
+//处理 GET /article?id=/comments
+app.get('/article/comments', (req, res, next) => {
+  const articleId = req.query.id;
+  getCommentsByArticleId(articleId, (error, results) => {
+    if (error) {
+      console.error('Error getting comments: ' + error.stack);
+      next(error);
+      return;
+    }
+    res.send(results);
+  });
+});
 // 使用 bodyParser 解析请求体数据
 app.use(express.json());
 
 // 处理 POST /article?id= 请求
 app.post('/article', text.postArticle);
+
+//处理 POST /article?id=/comments 请求
+app.post('/article/comments', (req, res, next) => {
+  const articleId = req.query.id;
+  const username = req.body.username;
+  const comment = req.body.comment;
+  addComment(articleId, username, comment, (error, result) => {
+    if (error) {
+      console.error('Error adding comment: ' + error.stack);
+      next(error);
+      return;
+    }
+    res.send(result);
+  });
+});
 
 
 // 启动服务器
